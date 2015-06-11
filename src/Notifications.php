@@ -4,7 +4,6 @@ namespace Notifications;
 class Notifications {
 
     private $config;
-    private static $backend;
 
     public function __construct($config = array()) {
         $this->config = array_merge(
@@ -12,22 +11,21 @@ class Notifications {
                                    'queue_pre' => "notifications-queue"
                                ), $config);
         try {
-            self::$backend = $this->config['backend'];
-            self::setBackend(self::$backend);
+            $this->setBackend($this->config['backend']);
         } catch (Exception $e) {
             trigger_error("Not set backend to Resque: ". $e->getMessage(), E_USER_ERROR);
         }
     }
 
-    public static function setBackend($backend) {
+    public function setBackend($backend) {
         // TODO set exception if $backend == null
         return Resque::setBackend($backend);
     }
 
     // Send notification to queue
     // TODO discussion function name "enqueue", "send"...
-    public static function enqueue($queue, $object) {
-        $queue = self::_getQueueName($queue);
+    public function enqueue($queue, $object) {
+        $queue = $this->_getQueueName($queue);
         $type = get_class($object);
 
         try {
@@ -38,7 +36,7 @@ class Notifications {
 
     }
 
-    private static function _getQueueName($queue) {
+    private function _getQueueName($queue) {
         return $queue .$this->config['queue_pre'];
     }
 
