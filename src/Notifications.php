@@ -8,7 +8,7 @@ class Notifications {
     public function __construct($config = array()) {
         $this->config = array_merge(
                             array( 'backend' => 'localhost:6379',
-                                   'queue_pre' => "notifications-queue"
+                                   'queue_pre' => "notifications.queue"
                                ), $config);
         try {
             $this->setBackend($this->config['backend']);
