@@ -1,15 +1,21 @@
 <?php
-namespace Notifications;
 
-class Notifications {
+namespace TJ\Notifications\Service;
 
+class NotificationService
+{
     private $config;
 
-    public function __construct($config = array()) {
+    public function __construct($config = array())
+    {
         $this->config = array_merge(
-                            array( 'backend' => 'localhost:6379',
-                                   'queue_pre' => "notifications.queue"
-                               ), $config);
+            array(
+                'backend' => 'localhost:6379',
+                'queue_pre' => "notifications.queue"
+            ),
+            $config
+        );
+
         try {
             $this->setBackend($this->config['backend']);
         } catch (Exception $e) {
@@ -17,14 +23,16 @@ class Notifications {
         }
     }
 
-    public function setBackend($backend) {
+    public function setBackend($backend)
+    {
         // TODO set exception if $backend == null
         return Resque::setBackend($backend);
     }
 
     // Send notification to queue
     // TODO discussion function name "enqueue", "send"...
-    public function enqueue($queue, $object) {
+    public function enqueue($queue, $object)
+    {
         $queue = $this->_getQueueName($queue);
         $type = get_class($object);
 
@@ -36,11 +44,10 @@ class Notifications {
 
     }
 
-    private function _getQueueName($queue) {
+    private function _getQueueName($queue)
+    {
         return $queue .$this->config['queue_pre'];
     }
-
-
 }
 
 ?>
